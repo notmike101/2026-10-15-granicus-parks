@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { normalizePark } from '../../src/data.js';
-import { createParkList } from '../../src/ui/list.js';
+import { createPanelSwitch, createParkList } from '../../src/ui/list.js';
 
 const parks = [
     normalizePark({ id: 'garden', name: 'Garden Park', location: { address: '12 Willow Street' }, amenities: ['gardens', 'trails'] }),
@@ -10,6 +10,21 @@ const parks = [
 ];
 
 afterEach(() => document.body.replaceChildren());
+
+/**
+ * Build a shell element in the state the responsive rules expect.
+ *
+ * @returns {HTMLElement} Shell with a list view.
+ */
+function makeShell() {
+    const shell = document.createElement('div');
+
+    shell.className = 'app-shell';
+    shell.dataset.view = 'list';
+    document.body.append(shell);
+
+    return shell;
+}
 
 describe('park list', () => {
     it('labels its search control and filters with a live count', () => {
@@ -81,5 +96,40 @@ describe('park list', () => {
         expect(panel.querySelectorAll('ul > li')).toHaveLength(0);
         expect(panel.textContent).toContain('No parks match');
         expect(panel.querySelector('[role="status"]').textContent).toContain('0 parks');
+    });
+});
+
+describe('panel switch', () => {
+    it('names the group and both buttons', () => {
+        const group = createPanelSwitch(makeShell());
+
+        expect(group.getAttribute('role')).toBe('group');
+        expect(group.getAttribute('aria-label')).toBe('Choose which panel to show');
+        expect([...group.querySelectorAll('button')].map((button) => button.textContent)).toEqual(['Park list', 'Map']);
+    });
+
+    it('reports which panel is active and switches the shell', () => {
+        const shell = makeShell();
+        const group = createPanelSwitch(shell);
+        const [listButton, mapButton] = [...group.querySelectorAll('button')];
+
+        expect(listButton.getAttribute('aria-pressed')).toBe('true');
+        expect(mapButton.getAttribute('aria-pressed')).toBe('false');
+        mapButton.click();
+        expect(shell.dataset.view).toBe('map');
+        expect(listButton.getAttribute('aria-pressed')).toBe('false');
+        expect(mapButton.getAttribute('aria-pressed')).toBe('true');
+        listButton.click();
+        expect(shell.dataset.view).toBe('list');
+    });
+
+    it('tells Leaflet to refit when a panel becomes visible', () => {
+        const shell = makeShell();
+        const group = createPanelSwitch(shell);
+        const resizes = [];
+
+        window.addEventListener('resize', () => resizes.push(shell.dataset.view));
+        group.querySelector('button[data-view-target="map"]').click();
+        expect(resizes).toEqual(['map']);
     });
 });

@@ -94,6 +94,55 @@ function createParkList({ parks, onSelect }) {
 }
 
 /**
+ * Build the small-screen control that chooses the visible panel.
+ *
+ * The buttons set the shell `data-view` attribute, which the responsive
+ * stylesheet reads, and report their state with `aria-pressed`.
+ *
+ * @param {HTMLElement} shell - Application shell element.
+ * @returns {HTMLElement} Switch element with two labelled buttons.
+ */
+function createPanelSwitch(shell) {
+    const group = document.createElement('div');
+    const buttons = [];
+
+    group.className = 'view-switch';
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', 'Choose which panel to show');
+
+    /**
+     * Show one panel and update the pressed state of both buttons.
+     *
+     * @param {string} target - Name of the panel to show.
+     * @returns {void}
+     */
+    function showView(target) {
+        shell.dataset.view = target;
+
+        for (const other of buttons) {
+            other.setAttribute('aria-pressed', String(other.dataset.viewTarget === target));
+        }
+
+        // Leaflet refits its container when the window resizes.
+        globalThis.dispatchEvent(new Event('resize'));
+    }
+
+    for (const target of ['list', 'map']) {
+        const button = document.createElement('button');
+
+        button.type = 'button';
+        button.dataset.viewTarget = target;
+        button.setAttribute('aria-pressed', String(shell.dataset.view === target));
+        button.textContent = target === 'list' ? 'Park list' : 'Map';
+        button.addEventListener('click', () => showView(target));
+        buttons.push(button);
+        group.append(button);
+    }
+
+    return group;
+}
+
+/**
  * Mount the standalone catalog and reserve the map region.
  *
  * @returns {{parks: object[], list: HTMLElement, detail: HTMLElement, shell: HTMLElement}} Catalog elements and data.
@@ -123,11 +172,11 @@ function mountCatalog() {
     map.id = 'map';
     map.className = 'map-panel';
     map.setAttribute('aria-label', 'Park map');
-    shell.append(list, map, detail);
+    shell.append(createPanelSwitch(shell), list, map, detail);
     document.querySelector('#app').replaceChildren(shell);
     queueMicrotask(() => document.dispatchEvent(new CustomEvent('parks:ready', { detail: { parks, list, detail, shell } })));
 
     return { parks, list, detail, shell };
 }
 
-export { createParkList, mountCatalog };
+export { createParkList, createPanelSwitch, mountCatalog };
