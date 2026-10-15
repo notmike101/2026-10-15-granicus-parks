@@ -1,0 +1,31 @@
+{
+  "name": "granicus-parks",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@notmike101/eslint-config-js": "file:vendor/eslint-config-js.tgz",
+    "@notmike101/eslint-config-jsdoc": "file:vendor/eslint-config-jsdoc.tgz",
+    "@eslint/js": "^9.39.4",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsdoc": "^62.9.0",
+    "eslint-plugin-sort-class-members": "^1.22.1",
+    "eslint-plugin-unicorn": "^64.0.0",
+    "globals": "^17.5.0",
+    "jsdom": "^27.0.0",
+    "vite": "^7.0.0",
+    "vitest": "^3.2.4"
+  }
+}
