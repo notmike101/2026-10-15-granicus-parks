@@ -1,0 +1,7 @@
+modelRoles:
+  default: llama.cpp/qwen3.8-flash-next-iq3_s:medium
+  slow: openai-codex/gpt-6.1-sol:high
+  smol: llama.cpp/qwen3.8-flash-next-iq3_s:off
+  task: openai-codex/gpt-6.1-sol:high
+  plan: llama.cpp/qwen3.8-flash-next-iq3_s:xhigh
+  commit: llama.cpp/qwen3.8-flash-next-iq3_s:low
