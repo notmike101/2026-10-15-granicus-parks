@@ -15,15 +15,15 @@ npm run build   # vite build
 npm run preview # serves dist/ for the browser checks
 ```
 
-Result on the merged state (m2 + m3 + m4): lint exits 0 with no warnings,
-48 Vitest tests pass, and the build succeeds. The production bundle is
-51 kB gzipped of JavaScript, which is mostly Leaflet.
+Result on the merged state (m2 + m3 + m4 plus the fixes below): lint exits
+0 with no warnings, 53 Vitest tests pass, and the build succeeds. The
+production bundle is 51 kB gzipped of JavaScript, which is mostly Leaflet.
 
 ## Automated tests
 
 | Area | Tests | Result |
 | --- | --- | --- |
-| Data: normalization of missing fields, search, amenity filter, bounds, one record per id | 28 | Pass |
+| Data: normalization of missing fields, link shapes, search, amenity filter, bounds, one record per id | 30 | Pass |
 | List panel in jsdom: search, filter, item names, empty state | 4 | Pass |
 | Detail dialog in jsdom: rendered sections, omitted sections, image fallback, close and focus return | 6 | Pass |
 | Map helpers in node: bounds box, marker label | 4 | Pass |
@@ -63,8 +63,9 @@ Chromium, headless, `vite preview` on `http://localhost:4183/`.
 | Wide screens: the page does not scroll, and the map panel keeps viewport height | Pass after fix |
 | Park list scrolls inside its own panel from 800 pixels up | Pass |
 | Viewport change and orientation change refit the map | Pass after fix |
+| Links from both data shapes render in the dialog with their labels | Pass after fix |
 
-Four defects were found in the browser and fixed:
+Five defects were found in the browser and fixed:
 
 1. Duplicate park records made the map keep stale markers after a filter.
    Fixed in m2 by merging records that share a park id.
@@ -87,6 +88,15 @@ Four defects were found in the browser and fixed:
    zero markers outside at 1280x900, 900x700, and 1200x620, zero outside for
    a six-park filtered subset, and zero outside on a phone in portrait
    (390x844) and landscape (844x390).
+5. Links in the supplied data were dropped. Five sample records store links
+   as an array of label and URL objects, but the normalizer read only the
+   `website` and `map` members. Central Park, Washington Square Park, Fort
+   Greene Park, Flushing Meadows-Corona Park, and Sunset Park showed no
+   links at all. Fixed by normalizing both shapes into one labelled list and
+   rendering that list. Measured after the fix: Central Park shows its
+   Wikipedia link, Washington Square Park shows three links (Wikipedia, park
+   website, map), Bryant Park shows two, and Cedar Hill Nature Preserve still
+   shows no links section.
 
 ## Not performed
 

@@ -43,7 +43,7 @@ describe('park data', () => {
             images: [],
             acreage: null,
             rating: null,
-            links: { website: null, map: null },
+            links: [],
             neighborhood: null,
             source: 'sample',
         });
@@ -63,7 +63,27 @@ describe('park data', () => {
         expect(park.hours).toBeNull();
         expect(park.acreage).toBe(0);
         expect(park.rating).toBe(0);
-        expect(park.links).toEqual({ website: null, map: null });
+        expect(park.links).toEqual([]);
+    });
+
+    it('keeps labelled links from the sample array shape', () => {
+        const park = normalizePark({
+            name: 'Lake Park',
+            links: [
+                { label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Lake_Park' },
+                { label: 'Postal', url: 'mailto:park@example.org' },
+                { url: '/relative/path' },
+                { label: 'Duplicate', url: 'https://en.wikipedia.org/wiki/Lake_Park' },
+            ],
+        });
+
+        expect(park.links).toEqual([{ label: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Lake_Park' }]);
+    });
+
+    it('labels website and map links from the object shape', () => {
+        const park = normalizePark({ name: 'Grid Park', links: { website: 'https://example.org', map: '   ' } });
+
+        expect(park.links).toEqual([{ label: 'Park website', url: 'https://example.org' }]);
     });
 
     it('removes invalid numbers and blank array items', () => {
@@ -117,7 +137,11 @@ describe('park data', () => {
     it('merges an augmented record into the sample record it repeats', () => {
         const washington = loadParks().find((park) => park.id === 'washington-square-park');
 
-        expect(washington.links.website).toBe('https://www.nycgovparks.org/parks/washington-square-park');
+        expect(washington.links.map((link) => link.url)).toEqual([
+            'https://en.wikipedia.org/wiki/Washington_Square_Park',
+            'https://www.nycgovparks.org/parks/washington-square-park',
+            'https://www.openstreetmap.org/?mlat=40.7308&mlon=-73.9973#map=17/40.7308/-73.9973',
+        ]);
         expect(washington.neighborhood).toBe('Greenwich Village');
         expect(washington.images.length).toBeGreaterThan(0);
         expect(washington.hours).toBe('6:00 AM - 12:00 AM');

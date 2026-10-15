@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import sampleParks from '../assets/parks.sample.json';
+import { loadParks } from './data.js';
 
 const mountedMaps = new WeakMap();
 
@@ -232,7 +232,7 @@ function mountMap() {
 
     container.setAttribute('role', 'region');
     container.setAttribute('aria-label', 'Park map');
-    const controls = createParkMap(container, sampleParks, {
+    const controls = createParkMap(container, loadParks(), {
         /**
          * Open the park details and notify the catalog.
          *

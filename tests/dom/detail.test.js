@@ -66,7 +66,10 @@ describe('park detail', () => {
         expect(dialog.textContent).toContain('Dawn to dusk');
         expect(dialog.textContent).toContain('12 acres');
         expect(dialog.textContent).toContain('4.5');
-        expect(dialog.querySelectorAll('a')).toHaveLength(2);
+        expect([...dialog.querySelectorAll('a')].map((a) => `${a.textContent} ${a.getAttribute('href')}`)).toEqual([
+            'Park website https://example.org/park',
+            'Map and directions https://example.org/map',
+        ]);
     });
 
     it('omits absent sections instead of empty headings or N/A text', () => {
