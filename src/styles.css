@@ -1,0 +1,202 @@
+:root {
+    font-family: system-ui, sans-serif;
+    color: #1f3027;
+    background: #f4f7f4;
+    line-height: 1.5;
+    font-synthesis: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button,
+a,
+input {
+    touch-action: manipulation;
+}
+
+button {
+    cursor: pointer;
+}
+
+:focus-visible {
+    outline: 2px solid #005fcc;
+    outline-offset: 3px;
+}
+
+a {
+    color: #005534;
+    text-decoration: underline;
+    overflow-wrap: anywhere;
+}
+
+.app-shell {
+    display: grid;
+    grid-template-columns: minmax(360px, 400px) minmax(0, 1fr);
+    min-height: 100dvh;
+}
+
+.park-list-panel {
+    min-width: 0;
+    padding: 1.25rem;
+    background: #fff;
+}
+
+.park-list-panel h1 {
+    margin-top: 0;
+}
+
+.park-list-panel > label {
+    display: block;
+    font-weight: 700;
+}
+
+input[type="search"] {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid #58665e;
+    border-radius: 4px;
+    padding: 0.5rem;
+    margin: 0.35rem 0 1rem;
+    color: #1f3027;
+    background: #fff;
+}
+
+input::placeholder {
+    color: #526056;
+    opacity: 1;
+}
+
+fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #58665e;
+    border-radius: 4px;
+}
+
+legend {
+    padding-inline: 0.25rem;
+    font-weight: 700;
+}
+
+fieldset label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 32px;
+    overflow-wrap: anywhere;
+}
+
+input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: #005534;
+}
+
+.park-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.park-results li + li {
+    margin-top: 0.65rem;
+}
+
+.park-results button {
+    display: grid;
+    gap: 0.25rem;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.85rem;
+    border: 1px solid #58665e;
+    border-radius: 6px;
+    color: #1f3027;
+    background: #f4f7f4;
+    text-align: start;
+    overflow-wrap: anywhere;
+}
+
+.park-results button:hover {
+    background: #e5eee7;
+    text-decoration: underline;
+}
+
+.map-panel {
+    min-width: 0;
+}
+
+.park-detail-dialog {
+    width: min(640px, calc(100% - 2rem));
+    max-width: calc(100% - 2rem);
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 1.25rem;
+    overflow: auto;
+    border: 1px solid #58665e;
+    border-radius: 8px;
+    color: #1f3027;
+    background: #fff;
+    overflow-wrap: anywhere;
+}
+
+.park-detail-dialog::backdrop {
+    background: rgb(0 0 0 / 55%);
+}
+
+.park-detail-close {
+    display: block;
+    margin-left: auto;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #58665e;
+    border-radius: 4px;
+    color: #fff;
+    background: #005534;
+}
+
+.park-detail-content img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-block: 0.75rem;
+}
+
+.park-detail-content [data-section="links"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 799px) {
+    .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}

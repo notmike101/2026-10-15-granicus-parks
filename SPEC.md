@@ -32,7 +32,7 @@ Approved decisions (user, 2026-10-15):
 
 ## Module interfaces (fixed for parallel work)
 
-- `src/data.js`: `normalizePark(raw)`; `searchParks(parks, query)`; `filterParks(parks, amenities)`; `amenityUniverse(parks)`; `boundsOfParks(parks)`.
+- `src/data.js`: `normalizePark(raw)`; `searchParks(parks, query)`; `filterParks(parks, amenities)`; `collectUniqueAmenities(parks)`; `boundsOfParks(parks)`.
 - `src/ui/list.js`: `createParkList({ parks, onSelect })` → panel element.
 - `src/ui/detail.js`: `<park-detail>` dialog element; `open(park)`, closes on Esc/backdrop, restores focus.
 - `src/map.js`: `createParkMap(el, parks)` → `{ focus(park) }`; Leaflet confined here.
