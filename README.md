@@ -44,6 +44,7 @@ This branch alone retains the entry placeholder until integration.
 - [Modules and selection flow](docs/architecture.md)
 - [Accessibility targets and manual checks](docs/accessibility.md)
 - [Interface research and sources](docs/ui-ux-research.md)
+- [Verification report: what was tested and what was not](docs/verification.md)
 
 ## Deviation
 
