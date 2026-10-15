@@ -12,7 +12,7 @@ let nextDetailId = 0;
  * @param {string|null} value - Section text.
  * @returns {void}
  */
-function appendText(content, key, value) {
+function appendLabeledTextSection(content, key, value) {
     if (value === null || value === undefined || value === '') {
         return;
     }
@@ -95,12 +95,12 @@ class ParkDetail extends HTMLElement {
 
         this.querySelector('h2').textContent = park.name;
         content.replaceChildren();
-        appendText(content, 'address', park.location.address);
-        appendText(content, 'neighborhood', park.neighborhood);
-        appendText(content, 'description', park.description);
-        appendText(content, 'hours', park.hours ? `Hours: ${park.hours}` : null);
-        appendText(content, 'acreage', park.acreage === null ? null : `${park.acreage} acres`);
-        appendText(content, 'rating', park.rating === null ? null : `Rating: ${park.rating} out of 5`);
+        appendLabeledTextSection(content, 'address', park.location.address);
+        appendLabeledTextSection(content, 'neighborhood', park.neighborhood);
+        appendLabeledTextSection(content, 'description', park.description);
+        appendLabeledTextSection(content, 'hours', park.hours ? `Hours: ${park.hours}` : null);
+        appendLabeledTextSection(content, 'acreage', park.acreage === null ? null : `${park.acreage} acres`);
+        appendLabeledTextSection(content, 'rating', park.rating === null ? null : `Rating: ${park.rating} out of 5`);
 
         if (park.amenities.length > 0) {
             const amenities = document.createElement('ul');

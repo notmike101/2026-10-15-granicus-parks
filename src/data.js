@@ -7,7 +7,7 @@ import sampleParks from '../assets/parks.sample.json';
  * @param {unknown} value - Input value.
  * @returns {string|null} Trimmed string or null.
  */
-function text(value) {
+function readTrimmedText(value) {
     return typeof value === 'string' && value.trim() ? value.trim() : null;
 }
 
@@ -17,7 +17,7 @@ function text(value) {
  * @param {unknown} value - Input value.
  * @returns {number|null} Number or null.
  */
-function number(value) {
+function readFiniteNumber(value) {
     return Number.isFinite(value) ? value : null;
 }
 
@@ -27,8 +27,8 @@ function number(value) {
  * @param {unknown} value - Input value.
  * @returns {string[]} Clean strings.
  */
-function strings(value) {
-    return Array.isArray(value) ? value.map(text).filter(Boolean) : [];
+function readTrimmedStringList(value) {
+    return Array.isArray(value) ? value.map(readTrimmedText).filter(Boolean) : [];
 }
 
 /**
@@ -39,24 +39,24 @@ function strings(value) {
  */
 function normalizePark(raw) {
     return {
-        id: text(raw?.id),
-        name: text(raw?.name),
-        description: text(raw?.description),
+        id: readTrimmedText(raw?.id),
+        name: readTrimmedText(raw?.name),
+        description: readTrimmedText(raw?.description),
         location: {
-            lat: number(raw?.location?.lat),
-            lng: number(raw?.location?.lng),
-            address: text(raw?.location?.address),
+            lat: readFiniteNumber(raw?.location?.lat),
+            lng: readFiniteNumber(raw?.location?.lng),
+            address: readTrimmedText(raw?.location?.address),
         },
-        amenities: strings(raw?.amenities),
-        hours: text(raw?.hours),
-        images: strings(raw?.images),
-        acreage: number(raw?.acreage),
-        rating: number(raw?.rating),
+        amenities: readTrimmedStringList(raw?.amenities),
+        hours: readTrimmedText(raw?.hours),
+        images: readTrimmedStringList(raw?.images),
+        acreage: readFiniteNumber(raw?.acreage),
+        rating: readFiniteNumber(raw?.rating),
         links: {
-            website: text(raw?.links?.website),
-            map: text(raw?.links?.map),
+            website: readTrimmedText(raw?.links?.website),
+            map: readTrimmedText(raw?.links?.map),
         },
-        neighborhood: text(raw?.neighborhood),
+        neighborhood: readTrimmedText(raw?.neighborhood),
         source: raw?.source === 'augmented' ? 'augmented' : 'sample',
     };
 }
@@ -67,7 +67,7 @@ function normalizePark(raw) {
  * @param {unknown} value - Field value from a park record.
  * @returns {boolean} True when the value is not null and not an empty array.
  */
-function filled(value) {
+function hasMeaningfulValue(value) {
     return value !== null && !(Array.isArray(value) && value.length === 0);
 }
 
@@ -78,11 +78,11 @@ function filled(value) {
  * @param {object} extra - Park read later with the same id.
  * @returns {object} Park that carries the fields of both records.
  */
-function mergePark(base, extra) {
+function mergeParkRecords(base, extra) {
     const merged = { ...base };
 
     for (const key of ['name', 'description', 'hours', 'acreage', 'rating', 'neighborhood']) {
-        if (filled(extra[key])) {
+        if (hasMeaningfulValue(extra[key])) {
             merged[key] = extra[key];
         }
     }
@@ -95,7 +95,7 @@ function mergePark(base, extra) {
 
     for (const key of ['location', 'links']) {
         for (const field of Object.keys(extra[key])) {
-            if (filled(extra[key][field])) {
+            if (hasMeaningfulValue(extra[key][field])) {
                 merged[key] = { ...merged[key], [field]: extra[key][field] };
             }
         }
@@ -115,7 +115,7 @@ function loadParks() {
     const byId = new Map();
 
     for (const park of [...sampleParks, ...additionalParks].map(normalizePark)) {
-        byId.set(park.id, byId.has(park.id) ? mergePark(byId.get(park.id), park) : park);
+        byId.set(park.id, byId.has(park.id) ? mergeParkRecords(byId.get(park.id), park) : park);
     }
 
     return [...byId.values()];
@@ -129,7 +129,7 @@ function loadParks() {
  * @returns {object[]} Matching parks.
  */
 function searchParks(parks, query) {
-    const term = (text(query) ?? '').toLowerCase();
+    const term = (readTrimmedText(query) ?? '').toLowerCase();
 
     return parks.filter((park) => [park.name, park.location.address, park.description, park.neighborhood]
         .some((value) => value?.toLowerCase().includes(term)) || !term);
@@ -152,7 +152,7 @@ function filterParks(parks, amenities) {
  * @param {object[]} parks - Source parks.
  * @returns {string[]} Amenity names.
  */
-function amenityUniverse(parks) {
+function collectUniqueAmenities(parks) {
     return [...new Set(parks.flatMap((park) => park.amenities))].sort();
 }
 
@@ -181,4 +181,4 @@ function boundsOfParks(parks) {
     };
 }
 
-export { loadParks, normalizePark, searchParks, filterParks, amenityUniverse, boundsOfParks };
+export { loadParks, normalizePark, searchParks, filterParks, collectUniqueAmenities, boundsOfParks };

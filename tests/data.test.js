@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { amenityUniverse, boundsOfParks, filterParks, loadParks, normalizePark, searchParks } from '../src/data.js';
+import { boundsOfParks, collectUniqueAmenities, filterParks, loadParks, normalizePark, searchParks } from '../src/data.js';
 
 const raw = {
     id: 'garden',
@@ -94,7 +94,7 @@ describe('park data', () => {
     });
 
     it('returns sorted unique amenities', () => {
-        expect(amenityUniverse(parks)).toEqual(['gardens', 'playground', 'trails']);
+        expect(collectUniqueAmenities(parks)).toEqual(['gardens', 'playground', 'trails']);
     });
 
     it('returns the exact coordinate bounds', () => {

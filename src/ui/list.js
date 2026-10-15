@@ -1,4 +1,4 @@
-import { amenityUniverse, filterParks, loadParks, searchParks } from '../data.js';
+import { collectUniqueAmenities, filterParks, loadParks, searchParks } from '../data.js';
 import './detail.js';
 import '../styles.css';
 
@@ -33,7 +33,7 @@ function createParkList({ parks, onSelect }) {
     const results = panel.querySelector('ul');
     const empty = panel.querySelector('.park-empty');
 
-    for (const amenity of amenityUniverse(parks)) {
+    for (const amenity of collectUniqueAmenities(parks)) {
         const label = document.createElement('label');
         const checkbox = document.createElement('input');
 
@@ -49,7 +49,7 @@ function createParkList({ parks, onSelect }) {
      * @param {Event} [event] - User input event.
      * @returns {void}
      */
-    function render(event) {
+    function renderParkResults(event) {
         const amenities = [...fieldset.querySelectorAll('input:checked')].map((input) => input.value);
         const visibleParks = filterParks(searchParks(parks, search.value), amenities);
 
@@ -86,9 +86,9 @@ function createParkList({ parks, onSelect }) {
         }
     }
 
-    search.addEventListener('input', render);
-    fieldset.addEventListener('change', render);
-    render();
+    search.addEventListener('input', renderParkResults);
+    fieldset.addEventListener('change', renderParkResults);
+    renderParkResults();
 
     return panel;
 }
