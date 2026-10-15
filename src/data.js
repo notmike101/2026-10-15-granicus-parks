@@ -62,12 +62,63 @@ function normalizePark(raw) {
 }
 
 /**
- * Load both bundled datasets.
+ * Report whether a value carries information.
  *
- * @returns {object[]} Normalized parks.
+ * @param {unknown} value - Field value from a park record.
+ * @returns {boolean} True when the value is not null and not an empty array.
+ */
+function filled(value) {
+    return value !== null && !(Array.isArray(value) && value.length === 0);
+}
+
+/**
+ * Fill gaps in a park with fields from a later record with the same id.
+ *
+ * @param {object} base - Park read first.
+ * @param {object} extra - Park read later with the same id.
+ * @returns {object} Park that carries the fields of both records.
+ */
+function mergePark(base, extra) {
+    const merged = { ...base };
+
+    for (const key of ['name', 'description', 'hours', 'acreage', 'rating', 'neighborhood']) {
+        if (filled(extra[key])) {
+            merged[key] = extra[key];
+        }
+    }
+
+    for (const key of ['amenities', 'images']) {
+        if (extra[key].length > 0) {
+            merged[key] = extra[key];
+        }
+    }
+
+    for (const key of ['location', 'links']) {
+        for (const field of Object.keys(extra[key])) {
+            if (filled(extra[key][field])) {
+                merged[key] = { ...merged[key], [field]: extra[key][field] };
+            }
+        }
+    }
+
+    return merged;
+}
+
+/**
+ * Load both bundled datasets with one record per park id.
+ *
+ * The augmented file can extend a park that the sample file already lists.
+ *
+ * @returns {object[]} Normalized parks with unique ids.
  */
 function loadParks() {
-    return [...sampleParks, ...additionalParks].map(normalizePark);
+    const byId = new Map();
+
+    for (const park of [...sampleParks, ...additionalParks].map(normalizePark)) {
+        byId.set(park.id, byId.has(park.id) ? mergePark(byId.get(park.id), park) : park);
+    }
+
+    return [...byId.values()];
 }
 
 /**

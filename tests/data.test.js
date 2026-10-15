@@ -105,11 +105,21 @@ describe('park data', () => {
         expect(boundsOfParks([normalizePark(null)])).toEqual({ south: null, west: null, north: null, east: null });
     });
 
-    it('loads at least 23 parks with finite coordinates', async () => {
-        const loaded = await loadParks();
+    it('loads one record per park id with finite coordinates', () => {
+        const loaded = loadParks();
+        const ids = loaded.map((park) => park.id);
 
-        expect(loaded.length).toBeGreaterThanOrEqual(23);
-        expect(loaded.filter((park) => park.source === 'augmented')).toHaveLength(6);
+        expect(ids).toEqual([...new Set(ids)]);
+        expect(loaded.length).toBeGreaterThanOrEqual(21);
         expect(loaded.every((park) => Number.isFinite(park.location.lat) && Number.isFinite(park.location.lng))).toBe(true);
+    });
+
+    it('merges an augmented record into the sample record it repeats', () => {
+        const washington = loadParks().find((park) => park.id === 'washington-square-park');
+
+        expect(washington.links.website).toBe('https://www.nycgovparks.org/parks/washington-square-park');
+        expect(washington.neighborhood).toBe('Greenwich Village');
+        expect(washington.images.length).toBeGreaterThan(0);
+        expect(washington.hours).toBe('6:00 AM - 12:00 AM');
     });
 });
