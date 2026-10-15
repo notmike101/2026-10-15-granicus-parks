@@ -1,10 +1,12 @@
+import { mountCatalog } from './ui/list.js';
+
 /**
- * Application entry point. Feature milestones mount their UI in app.js.
+ * Mount the park catalog.
  *
  * @returns {void}
  */
 function main() {
-    // Populated by the catalog (m2) and map (m3) milestones.
+    mountCatalog();
 }
 
 main();

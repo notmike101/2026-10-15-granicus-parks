@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+    <rect width="640" height="360" fill="#eef1ef"/>
+    <g fill="#43584b">
+        <path d="M260 190h120l-60-95z"/>
+        <path d="M250 225h140l-70-100z"/>
+        <rect x="310" y="210" width="20" height="50"/>
+        <rect x="160" y="255" width="320" height="8" rx="4"/>
+    </g>
+    <text x="320" y="310" text-anchor="middle" font-family="sans-serif" font-size="26" fill="#26392c">No image</text>
+</svg>
