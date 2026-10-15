@@ -59,14 +59,26 @@ Chromium, headless, `vite preview` on `http://localhost:4183/`.
 | Phone dialog: 358 px wide inside a 390 px viewport, no horizontal overflow | Pass |
 | `navigator.permissions.query({ name: 'geolocation' })` stays "prompt" through a full session | Pass |
 | No horizontal scrollbar at 1280, 900, and 390 px | Pass |
+| Panel switch sets `data-view` and reports `aria-pressed` on both buttons | Pass |
+| Wide screens: the page does not scroll, and the map panel keeps viewport height | Pass after fix |
+| Park list scrolls inside its own panel from 800 pixels up | Pass |
 
-Two defects were found in the browser and fixed:
+Three defects were found in the browser and fixed:
 
 1. Duplicate park records made the map keep stale markers after a filter.
    Fixed in m2 by merging records that share a park id.
 2. On a phone the map fitted a hidden, zero-sized container, so every
    marker landed off screen. Fixed in m3 by refitting when the container
    gains size.
+3. From 800 pixels up, the grid stretched the map panel to the height of
+   the park list. At a 1280x900 viewport the panel measured 3400 pixels
+   tall, so the page scrolled and the map ran past the screen. Applying an
+   amenity filter shortened the list, which resized the map under Leaflet
+   and left two of the six markers outside the panel. Fixed by locking the
+   shell to `100dvh` and scrolling the park list instead of the page.
+   Measured after the fix at the same viewport: map panel 880x900, no page
+   scroll, 21 of 21 markers inside at load and 6 of 6 inside after the
+   filter.
 
 ## Not performed
 
