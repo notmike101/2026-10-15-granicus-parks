@@ -73,7 +73,8 @@ function createParkMap(el, parks, options = {}) {
     });
     const markers = new Map();
     let currentParks = parks;
-    let lastArea = el.clientWidth * el.clientHeight;
+    let lastWidth = el.clientWidth;
+    let lastHeight = el.clientHeight;
     let selectedId = null;
 
     /**
@@ -94,18 +95,24 @@ function createParkMap(el, parks, options = {}) {
     }
 
     /**
-     * Refit when a hidden container becomes visible.
+     * Refit when the container becomes visible or changes size.
      *
      * @returns {void}
      */
     function handleResize() {
-        const area = el.clientWidth * el.clientHeight;
+        const width = el.clientWidth;
+        const height = el.clientHeight;
 
-        if (area > 0 && lastArea === 0) {
-            refit();
+        if (width === lastWidth && height === lastHeight) {
+            return;
         }
 
-        lastArea = area;
+        lastWidth = width;
+        lastHeight = height;
+
+        if (width > 0 && height > 0) {
+            refit();
+        }
     }
 
     if (typeof ResizeObserver === 'function') {

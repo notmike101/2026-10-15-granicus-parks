@@ -62,8 +62,9 @@ Chromium, headless, `vite preview` on `http://localhost:4183/`.
 | Panel switch sets `data-view` and reports `aria-pressed` on both buttons | Pass |
 | Wide screens: the page does not scroll, and the map panel keeps viewport height | Pass after fix |
 | Park list scrolls inside its own panel from 800 pixels up | Pass |
+| Viewport change and orientation change refit the map | Pass after fix |
 
-Three defects were found in the browser and fixed:
+Four defects were found in the browser and fixed:
 
 1. Duplicate park records made the map keep stale markers after a filter.
    Fixed in m2 by merging records that share a park id.
@@ -79,6 +80,13 @@ Three defects were found in the browser and fixed:
    Measured after the fix at the same viewport: map panel 880x900, no page
    scroll, 21 of 21 markers inside at load and 6 of 6 inside after the
    filter.
+4. A viewport change left markers off screen. After a resize from
+   1280x900 to 900x700, three of 21 markers fell outside the map panel,
+   because the map refitted only when a hidden panel became visible. Fixed
+   by refitting whenever the container changes size. Measured after the fix:
+   zero markers outside at 1280x900, 900x700, and 1200x620, zero outside for
+   a six-park filtered subset, and zero outside on a phone in portrait
+   (390x844) and landscape (844x390).
 
 ## Not performed
 
