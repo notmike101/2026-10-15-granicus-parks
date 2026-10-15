@@ -17,13 +17,13 @@ Its entry function retains the milestone placeholder until integration.
 
 | Module | Responsibility | Fixed interface |
 | --- | --- | --- |
-| `src/data.js` | Load and normalize records. Search names, addresses, and descriptions. Filter amenities. | `loadParks()`, `normalizePark(raw)`, `searchParks(parks, query)`, `filterParks(parks, amenities)`, `amenityUniverse(parks)`, `boundsOfParks(parks)` |
+| `src/data.js` | Load and normalize records. Search names, addresses, and descriptions. Filter amenities. | `loadParks()`, `normalizePark(raw)`, `searchParks(parks, query)`, `filterParks(parks, amenities)`, `collectUniqueAmenities(parks)`, `boundsOfParks(parks)` |
 | `src/ui/list.js` | Create search controls, amenity checkboxes, and park selection buttons. | `createParkList({ parks, onSelect })` returns a panel element. |
 | `src/ui/detail.js` | Define the `park-detail` custom element. Render one park in a native dialog. | `open(park)` opens details. `closePark()` closes details. |
 | `src/map.js` | Own Leaflet, raster tiles, bounds, markers, and marker selection. | `createParkMap(el, parks)` returns `{ focus, setParks, selectMarker }`. Pure helpers are `computeBounds(parks)` and `markerLabel(park)`. |
 | `src/styles.css` | Set base colors, controls, list items, and detail presentation in the catalog milestone. | Shared class names and semantic HTML. |
-| `src/responsive.css` | Set panel widths, mobile visibility, fluid type, and dialog limits. | `.app-shell`, `.view-switch`, `.park-list-panel`, `.map-panel`, and `park-detail dialog`. |
-| `src/main.js` | Start the integrated shell. Connect selection and filter events. | Import base styles before responsive styles. Pass normalized records to the UI and map. |
+| `src/responsive.css` | Set panel widths, mobile visibility, fluid type, and dialog limits. | Linked by `index.html`. Reads `.app-shell`, `.view-switch`, `.park-list-panel`, `.map-panel`, and `park-detail dialog`. |
+| `src/main.js` | Start the integrated shell. Connect selection and filter events. | Mount the catalog first, then the map, so the map fills the region the catalog reserves. |
 
 `boundsOfParks(parks)` returns `{ south, west, north, east }` for valid park coordinates.
 The map uses `computeBounds(parks)` to prepare its viewport bounds.
