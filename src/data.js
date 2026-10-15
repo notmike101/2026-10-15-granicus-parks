@@ -32,6 +32,49 @@ function readTrimmedStringList(value) {
 }
 
 /**
+ * Accept only HTTP and HTTPS URLs.
+ *
+ * @param {string} url - Candidate URL.
+ * @returns {boolean} Whether the URL can be published as a link.
+ */
+function isWebUrl(url) {
+    try {
+        return ['http:', 'https:'].includes(new URL(url).protocol);
+    } catch {
+        return false;
+    }
+}
+
+const objectLinkLabels = { website: 'Park website', map: 'Map and directions' };
+
+/**
+ * Read labelled web links from either source shape.
+ *
+ * The supplied sample file lists links as an array of label and URL
+ * objects. The added records use website and map members. Both shapes
+ * become one list, so the dialog can show every link.
+ *
+ * @param {unknown} value - Source links field.
+ * @returns {{label: string, url: string}[]} Links in source order without repeated URLs.
+ */
+function readLinks(value) {
+    const pairs = Array.isArray(value)
+        ? value.map((entry) => [entry?.label, entry?.url ?? entry?.href])
+        : Object.entries(objectLinkLabels).map(([key, label]) => [label, value?.[key]]);
+    const links = [];
+
+    for (const [label, url] of pairs) {
+        const text = readTrimmedText(url);
+
+        if (text && isWebUrl(text) && !links.some((link) => link.url === text)) {
+            links.push({ label: readTrimmedText(label) || 'More information', url: text });
+        }
+    }
+
+    return links;
+}
+
+/**
  * Normalize optional park fields without changing the input.
  *
  * @param {object|null} raw - Source record.
@@ -52,10 +95,7 @@ function normalizePark(raw) {
         images: readTrimmedStringList(raw?.images),
         acreage: readFiniteNumber(raw?.acreage),
         rating: readFiniteNumber(raw?.rating),
-        links: {
-            website: readTrimmedText(raw?.links?.website),
-            map: readTrimmedText(raw?.links?.map),
-        },
+        links: readLinks(raw?.links),
         neighborhood: readTrimmedText(raw?.neighborhood),
         source: raw?.source === 'augmented' ? 'augmented' : 'sample',
     };
@@ -93,13 +133,13 @@ function mergeParkRecords(base, extra) {
         }
     }
 
-    for (const key of ['location', 'links']) {
-        for (const field of Object.keys(extra[key])) {
-            if (hasMeaningfulValue(extra[key][field])) {
-                merged[key] = { ...merged[key], [field]: extra[key][field] };
-            }
+    for (const field of Object.keys(extra.location)) {
+        if (hasMeaningfulValue(extra.location[field])) {
+            merged.location = { ...merged.location, [field]: extra.location[field] };
         }
     }
+
+    merged.links = readLinks([...base.links, ...extra.links]);
 
     return merged;
 }

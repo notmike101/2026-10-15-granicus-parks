@@ -37,9 +37,7 @@ Missing text never produces an `N/A` label.
 | `images` | `string[]` | No | The detail dialog shows the bundled missing-image placeholder for an empty array. |
 | `acreage` | `number` or `null` | No | The detail dialog omits the acreage label and value. Zero remains a value. |
 | `rating` | `number` or `null` | No | The detail dialog omits the rating label and value. Zero remains a value. |
-| `links` | `object` | No | Normalization supplies null link members. The dialog omits the empty links section. |
-| `links.website` | `string` or `null` | No | The detail dialog omits the website link. |
-| `links.map` | `string` or `null` | No | The detail dialog omits the map link. |
+| `links` | `{label, url}[]` | No | An empty array omits the links section. No empty anchor appears. |
 | `neighborhood` | `string` or `null` | No | The detail dialog omits the neighborhood text. |
 | `source` | `'sample'` or `'augmented'` | No | Normalization defaults to `sample`. The UI does not display this field. |
 
@@ -55,9 +53,13 @@ No remote image is necessary to read the park details.
 
 ## Extended fields
 
-`links` separates the official website from the external map destination.
-This structure gives each link a clear purpose.
-Missing links do not produce empty anchors.
+`links` is a list of labelled web links. Normalization accepts two input
+shapes. The supplied sample file uses an array of label and URL objects, for
+example a Wikipedia article. The added records use `website` and `map`
+members, which normalization labels `Park website` and `Map and directions`.
+Normalization keeps only HTTP and HTTPS URLs, drops a repeated URL, and names
+an unlabelled link `More information`. A park that repeats in both files keeps
+the links of both records.
 
 `neighborhood` adds local context without changing the address.
 This field supports a readable detail view when a street address lacks context.

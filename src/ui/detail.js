@@ -24,20 +24,6 @@ function appendLabeledTextSection(content, key, value) {
     content.append(paragraph);
 }
 
-/**
- * Accept only web links.
- *
- * @param {string|null} value - Link URL.
- * @returns {boolean} Whether the URL uses HTTP or HTTPS.
- */
-function isWebLink(value) {
-    try {
-        return ['http:', 'https:'].includes(new URL(value).protocol);
-    } catch {
-        return false;
-    }
-}
-
 /** Park details with native modal keyboard behavior. */
 class ParkDetail extends HTMLElement {
     /**
@@ -140,14 +126,12 @@ class ParkDetail extends HTMLElement {
 
         links.dataset.section = 'links';
 
-        for (const [key, label] of [['website', 'Park website'], ['map', 'Map and directions']]) {
-            if (isWebLink(park.links[key])) {
-                const link = document.createElement('a');
+        for (const entry of park.links) {
+            const link = document.createElement('a');
 
-                link.href = park.links[key];
-                link.textContent = label;
-                links.append(link);
-            }
+            link.href = entry.url;
+            link.textContent = entry.label;
+            links.append(link);
         }
 
         if (links.children.length > 0) {
