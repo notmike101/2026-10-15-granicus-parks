@@ -24,19 +24,22 @@ The build command writes production files to `dist/`.
 The test command runs Vitest.
 The lint command permits no warnings.
 
-## Milestone branches
+## Milestones
 
-| Branch | Scope |
+| Pull request | Scope |
 | --- | --- |
-| `m1-toolchain` | Vite, Vitest, ESLint, and the HTML shell. |
-| `m2-data-catalog` | Added parks, normalized data, search, filters, list, and detail dialog. |
-| `m3-map` | Raster basemap, park markers, viewport bounds, and map selection. |
-| `m4-integration-polish` | Responsive styles, documentation, and integration contracts. |
+| #1 | Vite, Vitest, ESLint, and the HTML shell. |
+| #5 | Park data normalization, search, amenity filters, list, and detail dialog. |
+| #6 | Raster basemap, park markers, viewport bounds, and map selection. |
+| #7 | Responsive styles, documentation, and integration contracts. |
+| #8 | Map refit when a hidden panel becomes visible. |
+| #9 | Panel switch for screens narrower than 800 pixels. |
+| #10 | Map panel height locked to the viewport. |
+| #11 | Map refit after any container resize. |
+| #12 | Links from both data shapes reach the dialog. |
 
-Each feature branch starts from `m1-toolchain`.
-Each branch builds independently.
-The integrated app combines the catalog, map, and responsive shell.
-This branch alone retains the entry placeholder until integration.
+`main` holds the integrated application.
+Each change arrived through a reviewed pull request from a branch off `main`.
 
 ## Documentation
 
@@ -45,6 +48,7 @@ This branch alone retains the entry placeholder until integration.
 - [Accessibility targets and manual checks](docs/accessibility.md)
 - [Interface research and sources](docs/ui-ux-research.md)
 - [Verification report: what was tested and what was not](docs/verification.md)
+- [Session transcripts and how to read them](docs/transcripts.md)
 
 ## Deviation
 
