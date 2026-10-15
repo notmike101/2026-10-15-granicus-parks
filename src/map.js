@@ -72,7 +72,45 @@ function createParkMap(el, parks, options = {}) {
         html: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="32" viewBox="0 0 28 32" aria-hidden="true"><path d="M14 30C11 25 3 18 3 12a11 11 0 0 1 22 0c0 6-8 13-11 18Z" fill="currentColor" stroke="#111827" stroke-width="2"/><circle cx="14" cy="12" r="4" fill="#fff"/></svg>',
     });
     const markers = new Map();
+    let currentParks = parks;
+    let lastArea = el.clientWidth * el.clientHeight;
     let selectedId = null;
+
+    /**
+     * Fit the viewport to the current parks after a container resize.
+     *
+     * @returns {void}
+     */
+    function refit() {
+        const bounds = computeBounds(currentParks);
+
+        map.invalidateSize();
+
+        if (bounds) {
+            const { south, west, north, east } = bounds;
+
+            map.fitBounds([[south, west], [north, east]], { padding: [40, 40] });
+        }
+    }
+
+    /**
+     * Refit when a hidden container becomes visible.
+     *
+     * @returns {void}
+     */
+    function handleResize() {
+        const area = el.clientWidth * el.clientHeight;
+
+        if (area > 0 && lastArea === 0) {
+            refit();
+        }
+
+        lastArea = area;
+    }
+
+    if (typeof ResizeObserver === 'function') {
+        new ResizeObserver(handleResize).observe(el);
+    }
 
     /**
      * Mark the selected park without changing keyboard focus.
@@ -110,6 +148,8 @@ function createParkMap(el, parks, options = {}) {
      * @returns {void}
      */
     function setParks(nextParks) {
+        currentParks = nextParks;
+
         for (const marker of markers.values()) {
             marker.remove();
         }
