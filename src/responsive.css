@@ -1,0 +1,162 @@
+:root {
+    font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+}
+
+body {
+    margin: 0;
+    min-inline-size: 0;
+    min-height: 100dvh;
+}
+
+.app-shell,
+.app-shell *,
+park-detail,
+park-detail * {
+    box-sizing: border-box;
+}
+
+.app-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    min-height: 100dvh;
+    min-inline-size: 0;
+}
+
+.app-shell h1 {
+    font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);
+}
+
+.app-shell h2,
+park-detail h2 {
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.75rem);
+}
+
+.park-list-panel,
+.map-panel {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+}
+
+.park-list-panel {
+    overflow-wrap: anywhere;
+}
+
+.park-list-panel input:not([type='checkbox']),
+.park-list-panel select {
+    max-inline-size: 100%;
+}
+
+.view-switch {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    background: #ffffff;
+}
+
+.view-switch button {
+    flex: 1;
+    min-block-size: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid #244c3a;
+    border-radius: 0.25rem;
+    background: #ffffff;
+    color: #18362a;
+    font: inherit;
+    cursor: pointer;
+}
+
+.view-switch button[aria-pressed='true'] {
+    border-block-end-width: 5px;
+    background: #244c3a;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.app-shell :focus-visible,
+park-detail :focus-visible {
+    outline: 3px solid #111111;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px #ffffff;
+}
+
+.map-panel {
+    min-block-size: 65dvh;
+}
+
+/* Show one panel below 800 pixels. */
+@media (width < 800px) {
+    .app-shell:not([data-view='map']) .map-panel,
+    .app-shell[data-view='map'] .park-list-panel {
+        display: none;
+    }
+
+    park-detail dialog,
+    .park-detail-dialog {
+        min-block-size: calc(100dvh - 1rem);
+    }
+}
+
+park-detail dialog,
+.park-detail-dialog {
+    inline-size: calc(100% - 1rem);
+    max-inline-size: calc(100% - 1rem);
+    max-block-size: calc(100dvh - 1rem);
+    min-inline-size: 0;
+    margin: auto;
+    padding: clamp(0.75rem, 2vw, 1.5rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+    overflow-wrap: anywhere;
+    scroll-padding-block: 1rem;
+}
+
+park-detail dialog img,
+.park-detail-dialog img {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+}
+
+park-detail dialog::backdrop,
+.park-detail-dialog::backdrop {
+    background: rgb(0 0 0 / 60%);
+}
+
+/* Show both panels from 800 through 1200 pixels. */
+@media (min-width: 800px) {
+    .app-shell {
+        grid-template-columns: 320px minmax(0, 1fr);
+        align-items: stretch;
+    }
+
+    .app-shell > header,
+    .app-shell > footer {
+        grid-column: 1 / -1;
+    }
+
+    .view-switch {
+        display: none;
+    }
+
+    .app-shell .park-list-panel,
+    .app-shell .map-panel {
+        display: block;
+    }
+
+    .map-panel {
+        min-block-size: 75dvh;
+    }
+}
+
+/* Widen the list above 1200 pixels. */
+@media (width > 1200px) {
+    .app-shell {
+        grid-template-columns: 380px minmax(0, 1fr);
+    }
+
+    park-detail dialog,
+    .park-detail-dialog {
+        max-inline-size: 720px;
+    }
+}

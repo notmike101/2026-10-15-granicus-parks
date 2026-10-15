@@ -1,3 +1,5 @@
+import './responsive.css';
+
 /**
  * Application entry point. Feature milestones mount their UI in app.js.
  *
